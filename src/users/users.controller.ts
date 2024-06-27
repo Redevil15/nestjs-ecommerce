@@ -24,15 +24,9 @@ export class UsersController {
     return { user, accessToken };
   }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    //return this.usersService.create(createUserDto);
-    return 'hi';
-  }
-
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @Get('allusers')
+  async findAllUsers(): Promise<UserEntity[]> {
+    return await this.usersService.findAll();
   }
 
   @Get(':id')

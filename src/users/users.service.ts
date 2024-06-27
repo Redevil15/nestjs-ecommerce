@@ -48,8 +48,8 @@ export class UsersService {
     return 'This action adds a new user';
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(): Promise<UserEntity[]> {
+    return await this.userRepository.find();
   }
 
   findOne(id: number) {
