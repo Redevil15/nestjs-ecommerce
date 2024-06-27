@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
 import { Roles } from "src/utility/common/user-roles-enum";
 
-export class UserSignUp {
+export class UserSignUpDto {
     @IsNotEmpty({ message: "Name cannot be empty" })
     @IsString({ message: "Name must be a string" })
     name: string;
