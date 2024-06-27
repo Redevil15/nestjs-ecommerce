@@ -6,6 +6,8 @@ import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserSignUpDto } from './dto/user-signup.dto';
 import * as bcrypt from 'bcryptjs';
+import { UserSignInDto } from './dto/user-signin.dto';
+import { sign } from 'jsonwebtoken';
 
 @Injectable()
 export class UsersService {
@@ -25,6 +27,22 @@ export class UsersService {
     user = await this.userRepository.save(user);
     return this.sanitizeUser(user);
   }
+  
+  async signin( userSignInDto: UserSignInDto ): Promise<UserEntity> {
+    const userExists = await this.userRepository
+      .createQueryBuilder('users')
+      .addSelect('users.password')
+      .where('users.email=:email', {email:userSignInDto.email})
+      .getOne();
+    
+    if (!userExists || !(await bcrypt.compare(userSignInDto.password, userExists.password))) {
+      throw new BadRequestException('Bad credentials');
+    }
+
+    return this.sanitizeUser(userExists);
+  }
+
+
 
   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
@@ -59,4 +77,13 @@ export class UsersService {
     delete sanitizedUser.password;
     return sanitizedUser;
   }
+
+  async generateJwtToken(user: UserEntity): Promise<string> {
+    // Implement JWT token generation logic here
+    return sign({
+      id: user.id, 
+      email: user.email
+    }, process.env.ACCESS_TOKEN_SECRET_KEY, {expiresIn: process.env.ACCESS_TOKEN_SECRET_EXPIRE_TIME})
+  }
+
 }

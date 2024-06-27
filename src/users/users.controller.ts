@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserSignUpDto } from './dto/user-signup.dto';
 import { UserEntity } from './entities/user.entity';
+import { UserSignInDto } from './dto/user-signin.dto';
 
 @Controller('users')
 export class UsersController {
@@ -12,6 +13,15 @@ export class UsersController {
   @Post('signup')
   async signup(@Body() userSignUp: UserSignUpDto): Promise<UserEntity> {
     return await this.usersService.signup(userSignUp);
+  }
+
+  @Post('signin')
+  async signin(@Body() userSignInDto: UserSignInDto): Promise<{user: UserEntity,accessToken: string;}>   // JWT token for authenticated user
+  {
+    const user = await this.usersService.signin(userSignInDto); 
+    const accessToken = await this.usersService.generateJwtToken(user);
+
+    return { user, accessToken };
   }
 
   @Post()
