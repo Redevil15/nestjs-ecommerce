@@ -1,5 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
-import { Roles } from "src/utility/common/user-roles-enum";
+import { IsNotEmpty, IsString } from "class-validator";
 import { UserSignInDto } from "./user-signin.dto";
 
 export class UserSignUpDto extends UserSignInDto {
